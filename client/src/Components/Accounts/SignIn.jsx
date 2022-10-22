@@ -30,7 +30,8 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function SignIn(props) {
+  const onClick = props.onClick;
   const [ user, setUser ] = React.useState([]);
 
   const {
@@ -39,7 +40,7 @@ export default function SignIn() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => onClick(data);
 
   var handleCallbackResponse = function(response) {
     console.log("Encoded JWT ID token: " + response.credential);
@@ -107,7 +108,6 @@ export default function SignIn() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="email"
@@ -127,7 +127,6 @@ export default function SignIn() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="current-password"

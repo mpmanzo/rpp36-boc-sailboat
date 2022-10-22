@@ -9,6 +9,7 @@ CREATE DATABASE encompass;
 \c encompass;
 
 CREATE EXTENSION citext;
+CREATE EXTENSION pgcrypto;
 
 CREATE TABLE users (
   user_id SERIAL,

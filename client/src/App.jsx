@@ -8,6 +8,9 @@ import CalendarClass from "./Components/Calendar.jsx";
 import TodoCreate from './Components/Forms/TodoCreate.jsx';
 import CategoryCreate from './Components/Forms/CategoryCreate.jsx';
 import Modal from 'react-modal';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Layout from './Pages/Layout.jsx';
+import Home from './Pages/Home.jsx';
 
 Modal.setAppElement('#app');
 
@@ -28,6 +31,9 @@ class App extends React.Component {
       ],
       currentEvents: [{title: 'newEvent', date: '2022-10-17'}]
     };
+    this.getUser = this.getUser.bind(this);
+    this.signInUser = this.signInUser.bind(this);
+    this.signUpUser = this.signUpUser.bind(this);
   }
 
   componentDidMount() {
@@ -45,19 +51,70 @@ class App extends React.Component {
     }))
   }
 
+  getUser () {
+    axios({
+      method: 'GET',
+      data: {
+        email: email,
+        password: password,
+      },
+      withCredentials: true,
+      url: '/user',
+    }).then((res) => console.log(res));
+  }
+
+  signInUser (user) {
+    console.log('App: ', user);
+    axios({
+      method: 'POST',
+      data: {
+        email: user.email,
+        password: user.password,
+      },
+      withCredentials: true,
+      url: '/auth/signin',
+    }).then((res) => console.log(res));
+  }
+
+  signUpUser (user) {
+    console.log('App: ',user);
+    axios({
+      method: 'POST',
+      params: {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: user.password,
+      },
+      withCredentials: true,
+      url: '/auth/signup',
+    }).then((res) => console.log(res));
+  }
+
   render() {
     return (
-      <div>
-        <div>Encompass</div>
-        <SignIn />
-        <SignUp />
-        <Metrics />
-        <CalendarClass events={this.state.currentEvents}/>
-        <h1>THIS CREATES A TODO ENTRY</h1>
-        <TodoCreate userID={this.state.userID} categories={this.state.categories}/>
-        <h1>THIS CREATES A CATEGORY</h1>
-        <CategoryCreate userID={this.state.userID}/>
-      </div>
+      <>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Layout />}>
+              <Route index element={<Home />} />
+            </Route>
+            <Route exact path='/auth'>
+              <Route path='/auth/signin' element={<SignIn onClick={this.signInUser} />} />
+              <Route path='/auth/signup' element={<SignUp onClick={this.signUpUser} />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+        <div>
+          <div>Encompass</div>
+          <Metrics />
+          <CalendarClass events={this.state.currentEvents}/>
+          <h1>THIS CREATES A TODO ENTRY</h1>
+          <TodoCreate userID={this.state.userID} categories={this.state.categories}/>
+          <h1>THIS CREATES A CATEGORY</h1>
+          <CategoryCreate userID={this.state.userID}/>
+        </div>
+      </>
     );
   }
 }

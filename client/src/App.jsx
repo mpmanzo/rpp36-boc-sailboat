@@ -59,13 +59,53 @@ class App extends React.Component {
     });
   }
 
+  getUser () {
+    axios({
+      method: 'GET',
+      data: {
+        email: email,
+        password: password,
+      },
+      withCredentials: true,
+      url: '/user',
+    }).then((res) => console.log(res));
+  }
+
+  signInUser (user) {
+    console.log('App: ', user);
+    axios({
+      method: 'POST',
+      data: {
+        email: user.email,
+        password: user.password,
+      },
+      withCredentials: true,
+      url: '/auth/signin',
+    }).then((res) => console.log(res));
+  }
+
+  signUpUser (user) {
+    console.log('App: ',user);
+    axios({
+      method: 'POST',
+      params: {
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: user.password,
+      },
+      withCredentials: true,
+      url: '/auth/signup',
+    }).then((res) => console.log(res));
+  }
+
   render() {
     return (
       <Router>
         <div>
           <div>Encompass</div>
-          <SignIn />
-          <SignUp />
+          <SignIn onClick={this.signInUser} />
+          <SignUp onClick={this.signUpUser} />
           <Metrics />
           <Routes>
             <Route exact path="/" element={<CalendarClass events={this.state.currentEvents} userID={this.state.userID} />} />

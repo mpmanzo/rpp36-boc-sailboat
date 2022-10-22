@@ -30,7 +30,8 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function SignUp(props) {
+  const onClick = props.onClick;
   const {
     register,
     watch,
@@ -39,7 +40,7 @@ export default function SignUp() {
   } = useForm();
 
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => onClick(data);
 
   var handleCallbackResponse = function(response) {
     console.log("Encoded JWT ID token: " + response.credential);
@@ -64,13 +65,13 @@ export default function SignUp() {
     google.accounts.id.renderButton(
       document.getElementById("googleSignUp"),
       { theme: "outline", size: "large" }
-    );
+      );
 
-    google.accounts.id.prompt();
-  }, []);
+      google.accounts.id.prompt();
+    }, []);
 
-  return (
-    <ThemeProvider theme={theme}>
+    return (
+      <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <Typography variant="h3" color="primary" align="center">
           Encompass
@@ -86,7 +87,7 @@ export default function SignUp() {
             flexDirection: 'column',
             alignItems: 'center',
           }}
-        >
+          >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
@@ -97,7 +98,7 @@ export default function SignUp() {
             <div
               id="googleSignUp"
               align="center"
-            >
+              >
             </div>
             <p align="center">
               or
@@ -107,7 +108,6 @@ export default function SignUp() {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="given-name"
@@ -123,11 +123,10 @@ export default function SignUp() {
                   })}
                   error={!!errors?.firstName}
                   helperText={errors?.firstName ? errors.firstName.message : null}
-                />
+                  />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="family-name"
@@ -143,11 +142,10 @@ export default function SignUp() {
                   })}
                   error={!!errors?.lastName}
                   helperText={errors?.lastName ? errors.lastName.message : null}
-                />
+                  />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="email"
@@ -163,11 +161,10 @@ export default function SignUp() {
                   })}
                   error={!!errors?.email}
                   helperText={errors?.email ? errors.email.message : null}
-                />
+                  />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="new-password"
@@ -178,17 +175,16 @@ export default function SignUp() {
                   {...register('password', {
                     required: 'Required field',
                     pattern: {
-                      value: /(?=^.{8,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])(\S+$).*/,
+                      value: /(?=^.{0,20}$)(^\S)(?=.*[A-Z])(?=.*[\S]+$).*/i,
                       message: 'Incorrect password',
                     },
                   })}
                   error={!!errors?.password}
                   helperText={errors?.password ? errors.password.message : null}
-                />
+                  />
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="confirm-password"
@@ -206,13 +202,13 @@ export default function SignUp() {
                   })}
                   error={!!errors?.confirmPassword}
                   helperText={errors?.confirmPassword ? errors.confirmPassword.message : null}
-                />
+                  />
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
                   label="I want to receive inspiration, marketing promotions and updates via email."
-                />
+                  />
               </Grid>
             </Grid>
             <Button
@@ -220,7 +216,7 @@ export default function SignUp() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-            >
+              >
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
@@ -237,3 +233,9 @@ export default function SignUp() {
     </ThemeProvider>
   );
 }
+
+// Strict password validations:
+// value: /(?=^.{8,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])(\S+$).*/,
+// - At least 8 characters required, including:
+// - At least 1 of each: uppercase letter, lowercase letter, number and special character
+// - No spaces allowed

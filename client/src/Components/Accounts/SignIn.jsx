@@ -62,10 +62,10 @@ export default function SignIn(props) {
       callback: handleCallbackResponse
     });
 
-    google.accounts.id.renderButton(
-      document.getElementById("googleSignIn"),
-      { theme: "outline", size: "large" }
-    );
+    // google.accounts.id.renderButton(
+    //   document.getElementById("googleSignIn"),
+    //   { theme: "outline", size: "large" }
+    // );
 
     google.accounts.id.prompt();
   }, []);

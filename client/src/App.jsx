@@ -34,6 +34,9 @@ class App extends React.Component {
       ],
       currentEvents: [{id: 4, title: 'newEvent', date: '2022-10-17'}]
     };
+    this.getUser = this.getUser.bind(this);
+    this.signInUser = this.signInUser.bind(this);
+    this.signUpUser = this.signUpUser.bind(this);
   }
 
   componentDidMount() {
@@ -72,7 +75,6 @@ class App extends React.Component {
   }
 
   signInUser (user) {
-    console.log('App: ', user);
     axios({
       method: 'POST',
       data: {
@@ -85,14 +87,17 @@ class App extends React.Component {
   }
 
   signUpUser (user) {
-    console.log('App: ',user);
+    let email = user.email.toLowerCase();
+    let firstname = user.firstName[0].toUpperCase() + user.firstName.substring(1);
+    let lastname = user.lastName[0].toUpperCase() + user.lastName.substring(1);
+    let password = user.password;
     axios({
       method: 'POST',
-      params: {
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        password: user.password,
+      data: {
+        email: email,
+        firstname: firstname,
+        lastname: lastname,
+        password: password,
       },
       withCredentials: true,
       url: '/auth/signup',

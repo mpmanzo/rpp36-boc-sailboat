@@ -137,6 +137,42 @@ const getAppointments = function(id) {
   })
 }
 
+const addUser = function(firstname, lastname, email, password, cb) {
+  return pool
+  .connect()
+  .then(client => {
+    return client
+      .query(`INSERT INTO users (firstname, lastname, email, password) VALUES ('${firstname}', '${lastname}', '${email}', crypt('${password}', gen_salt('bf', 8))) RETURNING *;`)
+      .then(res => {
+        cb(null, res.rows);
+      })
+      .catch(err => {
+        cb(err);
+      })
+      .then(() => {
+        client.release()
+      });
+  })
+}
+
+const getUser = function(email, cb) {
+  return pool
+  .connect()
+  .then(client => {
+    return client
+      .query(`SELECT * FROM users WHERE email='${email}'`)
+      .then(res => {
+        cb(null, res.rows);
+      })
+      .catch(err => {
+        cb(err);
+      })
+      .then(() => {
+        client.release()
+      });
+  })
+}
+
 module.exports = {
   pool,
   getTodos,
@@ -145,5 +181,7 @@ module.exports = {
   getCategories,
   createCategory,
   bookAppointment,
-  getAppointments
+  getAppointments,
+  getUser,
+  addUser
 };

@@ -34,6 +34,9 @@ class App extends React.Component {
       ],
       currentEvents: [{id: 4, title: 'newEvent', date: '2022-10-17'}]
     };
+    this.getUser = this.getUser.bind(this);
+    this.signInUser = this.signInUser.bind(this);
+    this.signUpUser = this.signUpUser.bind(this);
   }
 
   componentDidMount() {
@@ -59,13 +62,55 @@ class App extends React.Component {
     });
   }
 
+  getUser () {
+    axios({
+      method: 'GET',
+      data: {
+        email: email,
+        password: password,
+      },
+      withCredentials: true,
+      url: '/user',
+    }).then((res) => console.log(res));
+  }
+
+  signInUser (user) {
+    axios({
+      method: 'POST',
+      data: {
+        email: user.email,
+        password: user.password,
+      },
+      withCredentials: true,
+      url: '/auth/signin',
+    }).then((res) => console.log(res));
+  }
+
+  signUpUser (user) {
+    let email = user.email.toLowerCase();
+    let firstname = user.firstName[0].toUpperCase() + user.firstName.substring(1);
+    let lastname = user.lastName[0].toUpperCase() + user.lastName.substring(1);
+    let password = user.password;
+    axios({
+      method: 'POST',
+      data: {
+        email: email,
+        firstname: firstname,
+        lastname: lastname,
+        password: password,
+      },
+      withCredentials: true,
+      url: '/auth/signup',
+    }).then((res) => console.log(res));
+  }
+
   render() {
     return (
       <Router>
         <div>
           <div>Encompass</div>
-          <SignIn />
-          <SignUp />
+          <SignIn onClick={this.signInUser} />
+          <SignUp onClick={this.signUpUser} />
           <Metrics />
           <Routes>
             <Route exact path="/" element={<CalendarClass events={this.state.currentEvents} userID={this.state.userID} />} />

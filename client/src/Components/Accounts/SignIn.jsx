@@ -30,7 +30,8 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function SignIn(props) {
+  const onClick = props.onClick;
   const [ user, setUser ] = React.useState([]);
 
   const {
@@ -39,7 +40,7 @@ export default function SignIn() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => onClick(data);
 
   var handleCallbackResponse = function(response) {
     console.log("Encoded JWT ID token: " + response.credential);
@@ -107,7 +108,6 @@ export default function SignIn() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="email"
@@ -127,7 +127,6 @@ export default function SignIn() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="current-password"
@@ -138,7 +137,7 @@ export default function SignIn() {
                   {...register('password', {
                     required: 'Required field',
                     pattern: {
-                      value: /(?=^.{8,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])(\S+$).*/,
+                      value: /(?=^.{0,20}$)(^\S)(?=.*[A-Z])(?=.*[\S]+$).*/i,
                       message: 'Incorrect password',
                     },
                   })}
@@ -180,3 +179,9 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
+
+// Strict password validations:
+// value: /(?=^.{8,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])(\S+$).*/,
+// - At least 8 characters required, including:
+// - At least 1 of each: uppercase letter, lowercase letter, number and special character
+// - No spaces allowed

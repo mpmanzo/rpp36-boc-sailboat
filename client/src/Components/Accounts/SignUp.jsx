@@ -30,7 +30,8 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function SignUp(props) {
+  const onClick = props.onClick;
   const {
     register,
     watch,
@@ -39,7 +40,7 @@ export default function SignUp() {
   } = useForm();
 
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => onClick(data);
 
   var handleCallbackResponse = function(response) {
     console.log("Encoded JWT ID token: " + response.credential);
@@ -107,7 +108,6 @@ export default function SignUp() {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="given-name"
@@ -127,7 +127,6 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="family-name"
@@ -147,7 +146,6 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="email"
@@ -167,7 +165,6 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="new-password"
@@ -178,7 +175,7 @@ export default function SignUp() {
                   {...register('password', {
                     required: 'Required field',
                     pattern: {
-                      value: /(?=^.{8,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])(\S+$).*/,
+                      value: /(?=^.{0,20}$)(^\S)(?=.*[A-Z])(?=.*[\S]+$).*/i,
                       message: 'Incorrect password',
                     },
                   })}
@@ -188,7 +185,6 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  autoFocus
                   fullWidth
                   required
                   autoComplete="confirm-password"
@@ -237,3 +233,9 @@ export default function SignUp() {
     </ThemeProvider>
   );
 }
+
+// Strict password validations:
+// value: /(?=^.{8,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])(\S+$).*/,
+// - At least 8 characters required, including:
+// - At least 1 of each: uppercase letter, lowercase letter, number and special character
+// - No spaces allowed

@@ -27,37 +27,74 @@ app.use(session({
 
 app.use(cookieParser("secretcode"));  // <-- add secret code to .env file
 
+app.use(passport.initialize());
+app.use(passport.session());
+require('../routes/passportConfig')(passport);
+
 app.use(express.static("client/public"));
 app.use('/share/*', express.static("client/public"));
 
 var baseURL = 'http://54.85.127.105/';
 
 // Routes
-app.post("/auth/signin", (req, res) => {
-  console.log(req.body);
-});
+// makeuseof.com/passport-authenticate-node-postgres
+app.post(
+  "/auth/signup",
+  passport.authenticate("local-signup", { session: false }),
+  (req, res, next) => {
+    res.json({ user: req.user });
+  }
+);
 
-app.post("/auth/signup", (req, res) => {
-  const { firstname, lastname, email, password } = req.body;
+// app.post(
+//   "/auth/signin",
+//   passport.authenticate("local-signin", { session: false }),
+//   (req, res, next) => {
+//     res.json({ user: req.user });
+//   }
+// );
 
-  db.getUser(email, async (err, userData) => {
+// Initial Routes (works for signup but not for signin)
+app.post("/auth/signin", (req, res, next) => {
+  passport.authenticate('local-signin', (err, user, info) => {
     if (err) res.status(err.status).send(err.message);
-    if (userData.length > 0) res.send('User already exists');
-    if (userData.length === 0) {
-      await  db.addUser(firstname, lastname, email, password, async (err, userData) => {
-        if (err) {
-          res.status(err.status).send(err.message);
-        } else {
-          await res.status(201).send(userData);
-        }
+    if (!user) {
+      console.log('no user: ', req.user);
+      res.send('No user exists');
+    } else {
+      req.login(user, err => {
+        if (err) res.status(err.status).send(err.message);
+        res.send('Successfully Authenticated');
+        console.log('logged in: ', req.user);
       })
     }
-  })
+  })(req, res, next);
 });
 
-app.get("/user", (req, res) => {
-  console.log(req.body);
-});
+// app.post("/auth/signup", (req, res) => {
+//   const { firstname, lastname, email, password } = req.body;
+
+//   db.getUser(email, async (err, userData) => {
+//     if (err) res.status(err.status).send(err.message);
+//     if (userData.length > 0) {
+//       console.log(userData);
+//       res.send('User already exists');
+//     }
+//     if (userData.length === 0) {
+//       await  db.addUser(firstname, lastname, email, password, async (err, userData) => {
+//         if (err) {
+//           res.status(err.status).send(err.message);
+//         } else {
+//           await res.status(201).send(userData);
+//         }
+//       })
+//     }
+//   })
+// });
+
+// app.get("/user", (req, res) => {
+//   console.log(req.body);
+// });
 
 app.post('/todo', function(req, res) {
   db.createTodo(req.body)

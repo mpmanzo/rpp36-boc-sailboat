@@ -173,6 +173,58 @@ const getUser = function(email, cb) {
   })
 }
 
+const validatePassword = function(email, password, cb) {
+  return pool
+  .connect()
+  .then(client => {
+    return client
+      .query(`SELECT user_id FROM users WHERE email='${email}' AND password=crypt('${password}', password);`)
+      .then(res => {
+        cb(null, res.rows);
+      })
+      .catch(err => {
+        cb(err);
+      })
+      .then(() => {
+        client.release()
+      });
+  })
+}
+
+// makeuseof.com/passport-authenticate-node-postgres
+
+// Check if an email is already registered
+const emailExists = async (email) => {
+  const data = await pool.query(
+    `SELECT * FROM users WHERE email='${email}';`
+  );
+  if (data.rowCount === 0) return false;
+  return data.rows[0];
+};
+
+// Create a new user
+const createUser = async (firstname, lastname, email, password) => {
+  const data = await pool.query(
+    `INSERT INTO users (firstname, lastname, email, password)
+     VALUES ('${firstname}', '${lastname}', '${email}', crypt('${password}', gen_salt('bf', 8)))
+     RETURNING *;`
+  );
+
+  if (data.rowCount === 0) return false;
+  return data.rows[0];
+};
+
+// Compare plain text password give by user to the hashed password in the database
+const matchPassword = async (email, password) => {
+  const data = await pool.query(
+    `SELECT *
+     FROM users
+     WHERE email='${email}'
+     AND password=crypt('${password}', password);`
+  );
+  return data.rows[0] !== undefined;
+};
+
 module.exports = {
   pool,
   getTodos,
@@ -183,5 +235,9 @@ module.exports = {
   bookAppointment,
   getAppointments,
   getUser,
-  addUser
+  addUser,
+  validatePassword,
+  emailExists,
+  createUser,
+  matchPassword
 };

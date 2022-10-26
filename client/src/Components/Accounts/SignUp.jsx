@@ -47,28 +47,28 @@ export default function SignUp(props) {
     var googleUser = jwt_decode(response.credential);
     console.log(googleUser);
     setUser(googleUser);
-    document.getElementById("googleSignUp").hidden=true;
+    document.getElementById("google-signup").hidden=true;
   };
 
   var handleSignOut = function(event) {
     setUser({});
-    document.getElementById("googleSignUp").hidden=false;
+    document.getElementById("google-signup").hidden=false;
   };
 
-  React.useEffect(() => {
-    /* global google */
-    google.accounts.id.initialize({
-      client_id: "613322576609-rqh45grths58apdat1427ogk93jlasfb.apps.googleusercontent.com",
-      callback: handleCallbackResponse
-    });
+  // React.useEffect(() => {
+  //   /* global google */
+  //   google.accounts.id.initialize({
+  //     client_id: "613322576609-rqh45grths58apdat1427ogk93jlasfb.apps.googleusercontent.com",
+  //     callback: handleCallbackResponse
+  //   });
 
-    google.accounts.id.renderButton(
-      document.getElementById("googleSignUp"),
-      { theme: "outline", size: "large" }
-    );
+  //   google.accounts.id.renderButton(
+  //     document.getElementById("google-signup"),
+  //     { theme: "outline", size: "large" }
+  //   );
 
-    google.accounts.id.prompt();
-  }, []);
+  //   google.accounts.id.prompt();
+  // }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -96,7 +96,7 @@ export default function SignUp(props) {
           </Typography>
           <Box sx={{ mt: 5 }}>
             <div
-              id="googleSignUp"
+              id="google-signup"
               align="center"
             >
             </div>
@@ -111,7 +111,7 @@ export default function SignUp(props) {
                   fullWidth
                   required
                   autoComplete="given-name"
-                  id="firstName"
+                  id="firstname-signup"
                   label="First Name"
                   name="firstName"
                   {...register('firstName', {
@@ -130,7 +130,7 @@ export default function SignUp(props) {
                   fullWidth
                   required
                   autoComplete="family-name"
-                  id="lastName"
+                  id="lastname-signup"
                   label="Last Name"
                   name="lastName"
                   {...register('lastName', {
@@ -149,7 +149,7 @@ export default function SignUp(props) {
                   fullWidth
                   required
                   autoComplete="email"
-                  id="email"
+                  id="email-signup"
                   label="Email Address"
                   name="email"
                   {...register('email', {
@@ -168,7 +168,7 @@ export default function SignUp(props) {
                   fullWidth
                   required
                   autoComplete="new-password"
-                  id="password"
+                  id="password-signup"
                   label="Password"
                   name="password"
                   type="password"
@@ -188,7 +188,7 @@ export default function SignUp(props) {
                   fullWidth
                   required
                   autoComplete="confirm-password"
-                  id="confirmPassword"
+                  id="confirm-password-signup"
                   label="Confirm Password"
                   name="confirmPassword"
                   type="password"

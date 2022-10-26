@@ -83,7 +83,9 @@ class App extends React.Component {
       },
       withCredentials: true,
       url: '/auth/signin',
-    }).then((res) => console.log(res));
+    })
+      .then((res) => console.log('signin res: ', res))
+      .catch((err) => console.log('failure: ', err))
   }
 
   signUpUser (user) {
@@ -101,7 +103,7 @@ class App extends React.Component {
       },
       withCredentials: true,
       url: '/auth/signup',
-    }).then((res) => console.log(res));
+    }).then((res) => console.log('signup res: ', res));
   }
 
   render() {

@@ -47,28 +47,28 @@ export default function SignIn(props) {
     var googleUser = jwt_decode(response.credential);
     console.log(googleUser);
     setUser(googleUser);
-    document.getElementById("googleSignIn").hidden=true;
+    document.getElementById("google-signin").hidden=true;
   };
 
   var handleSignOut = function(event) {
     setUser({});
-    document.getElementById("googleSignIn").hidden=false;
+    document.getElementById("google-signin").hidden=false;
   };
 
-  React.useEffect(() => {
-    /* global google */
-    google.accounts.id.initialize({
-      client_id: "613322576609-rqh45grths58apdat1427ogk93jlasfb.apps.googleusercontent.com",
-      callback: handleCallbackResponse
-    });
+  // React.useEffect(() => {
+  //   /* global google */
+  //   google.accounts.id.initialize({
+  //     client_id: "613322576609-rqh45grths58apdat1427ogk93jlasfb.apps.googleusercontent.com",
+  //     callback: handleCallbackResponse
+  //   });
 
-    google.accounts.id.renderButton(
-      document.getElementById("googleSignIn"),
-      { theme: "outline", size: "large" }
-    );
+  //   google.accounts.id.renderButton(
+  //     document.getElementById("google-signin"),
+  //     { theme: "outline", size: "large" }
+  //   );
 
-    google.accounts.id.prompt();
-  }, []);
+  //   google.accounts.id.prompt();
+  // }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -96,7 +96,7 @@ export default function SignIn(props) {
           </Typography>
           <Box sx={{ mt: 5 }}>
             <div
-              id="googleSignIn"
+              id="google-signin"
               align="center"
             >
             </div>
@@ -111,7 +111,7 @@ export default function SignIn(props) {
                   fullWidth
                   required
                   autoComplete="email"
-                  id="email"
+                  id="email-signin"
                   label='Email Address'
                   name="email"
                   {...register("email", {
@@ -130,7 +130,7 @@ export default function SignIn(props) {
                   fullWidth
                   required
                   autoComplete="current-password"
-                  id="password"
+                  id="password-signin"
                   label="Password"
                   name="password"
                   type="password"

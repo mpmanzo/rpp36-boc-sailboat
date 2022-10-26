@@ -12,17 +12,17 @@ CREATE EXTENSION citext;
 
 CREATE TABLE users (
   user_id SERIAL,
-  firstName TEXT NOT NULL,
-  lastName TEXT NOT NULL,
+  firstname TEXT NOT NULL,
+  lastname TEXT NOT NULL,
   email CITEXT UNIQUE NOT NULL,
-  gmail CITEXT UNIQUE,
+  opt_in BOOLEAN DEFAULT FALSE,
   password TEXT,
 
   PRIMARY KEY (user_id),
-  CONSTRAINT chk_firstName
-    CHECK(char_length(firstName) <= 20),
-  CONSTRAINT chk_lastName
-    CHECK(char_length(lastName) <= 20)
+  CONSTRAINT chk_firstname
+    CHECK(char_length(firstname) <= 20),
+  CONSTRAINT chk_lastname
+    CHECK(char_length(lastname) <= 20)
 );
 
 CREATE TABLE categories (
@@ -72,3 +72,5 @@ SELECT setval('todos_todo_id_seq', (SELECT MAX(todo_id) FROM todos)+1);
 \COPY users FROM './db/schema/users.csv' DELIMITER ',' CSV HEADER;
 \COPY categories FROM './db/schema/categories.csv' DELIMITER ',' CSV HEADER;
 \COPY todos FROM './db/schema/todos.csv' DELIMITER ',' CSV HEADER;
+
+SELECT setval('users_user_id_seq', (SELECT MAX(user_id) FROM users)+1);

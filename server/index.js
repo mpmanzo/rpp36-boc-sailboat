@@ -1,15 +1,47 @@
 const express = require("express");
 const axios = require("axios");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const sessionPool = require("pg").Pool;
+const pgSession = require("connect-pg-simple")(session);
+const passport = require("passport");
+const authRouter = require("../routes/auth.js");
 const db = require("../db/postgres.js");
-const path = require('path')
+const path = require('path');
+
 const app = express();
 const port = 3000;
+
+const pgPool = db.pool;
+const secret = 'team sailboat';
+const sessionConfig = {
+  store: new pgSession({
+    pool: pgPool,
+    tableName: 'session',
+  }),
+  name: 'SID',
+  secret: secret,
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't save session if unmodified
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 30,
+    aameSite: true,
+    secure: false // enable only on https
+  }
+};
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static("client/public"));
 app.use('/share/*', express.static("client/public"));
+app.use(cookieParser(secret));
+app.use(session(sessionConfig));
+passport.initialize();
+passport.session();
+app.use(passport.authenticate('session'));
+app.use('/auth', authRouter);
 
 var baseURL = 'http://54.85.127.105/';
 
